@@ -10,8 +10,7 @@ namespace Multitarea
     /// El listado de enteros acabará a priori antes que el de alfanuméricos
     /// Función Main async para poder ejecutar usar await en la llamada a Task.WhenAll para controlar finalización de procesos
     /// Si no se define de esta manera la ejecución en paralelo se realiza igualmente pero no podremos controlar finalización de todos los procesos al no poder usar await 
-    /// Cada función es de tipo asincrono para poder usar internamente await que permita salto entre procesos.
-    /// El tipo devuelto por funciones asincronas debe ser una Task
+    /// Se definen las funciones de tipo async para poder simular bloqueos y usar await para liberar proceso
     /// </summary>
     class Program
     {
@@ -67,17 +66,18 @@ namespace Multitarea
             while (Console.ReadKey().Key.ToString().ToUpper() == "R");
         }
 
-        static void ProcesoNumeros()
+        static async Task ProcesoNumeros()
         {
             int a = 0;
             while (a<5)
             {
                 Console.Write(++a + ", ");
-                Thread.Sleep(1);
+                Thread.Sleep(1); //Simulando que el proceso es largo
+                await Task.WhenAll(Task.Delay(25)); //Simulando que se ejecuta una acción bloqueante
             }
         }
 
-        static void ProcesoLetras()
+        static async void ProcesoLetras()
         {
             int a = 0;
             while (a < 10)
@@ -93,7 +93,7 @@ namespace Multitarea
             while (a < 5)
             {
                 Console.Write(++a + ", ");
-                Thread.Sleep(1);
+                Thread.Sleep(1+25); //Milisegundos añadidos para simular la misma espera que los añadidos en su versión asincrona
             }
             int b = 0;
             while (b < 10)
