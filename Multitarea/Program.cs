@@ -73,7 +73,7 @@ namespace Multitarea
             {
                 Console.Write(++a + ", ");
                 Thread.Sleep(1); //Simulando que el proceso es largo
-                await Task.WhenAll(Task.Delay(25)); //Simulando que se ejecuta una acción bloqueante
+                await Task.Delay(25); //Simulando que se ejecuta una acción bloqueante
             }
         }
 
