@@ -20,64 +20,70 @@ namespace Multitarea
             int iteraciones = 5;
             Stopwatch tiempo = new Stopwatch();
 
-            #region Tarea sincrona
-            Console.WriteLine("Impresión A..J y 1..5 usando un único proceso:");
-            TimeSpan tsincrono = TimeSpan.Zero;
-            for (int i = 0; i < iteraciones; i++)
+            do
             {
+                Console.Clear();
+
+                #region Tarea sincrona
+                Console.WriteLine("Impresión A..J y 1..5 usando un único proceso:");
+                TimeSpan tsincrono = TimeSpan.Zero;
+                for (int i = 0; i < iteraciones; i++)
+                {
+                    tiempo.Reset();
+                    tiempo.Start();
+                    ProcesoNumerosLetras();
+                    tiempo.Stop();
+                    Console.WriteLine(tiempo.Elapsed);
+                    tsincrono += tiempo.Elapsed;
+                }
+                #endregion
+
                 tiempo.Reset();
-                tiempo.Start();
-                ProcesoNumerosLetras();
-                tiempo.Stop();
-                Console.WriteLine(tiempo.Elapsed);
-                tsincrono += tiempo.Elapsed;
-            }
-            #endregion
+                Console.WriteLine();
 
-            tiempo.Reset();
-            Console.WriteLine();
+                #region Tarea asincrona
+                Console.WriteLine("Impresión A..J y 1..5 usando dos procesos asincronos en paralelo:");
+                TimeSpan tasincrono = TimeSpan.Zero;
+                for (int i = 0; i < iteraciones; i++)
+                {
+                    tiempo.Reset();
+                    tiempo.Start();
+                    Task p1 = Task.Run(() => ProcesoNumeros());
+                    Task p2 = Task.Run(() => ProcesoLetras());
+                    await Task.WhenAll(p1, p2);
+                    tiempo.Stop();
+                    Console.WriteLine(tiempo.Elapsed);
+                    tasincrono += tiempo.Elapsed;
+                }
+                #endregion
 
-            #region Tarea asincrona
-            Console.WriteLine("Impresión A..J y 1..5 usando dos procesos asincronos en paralelo:");
-            TimeSpan tasincrono = TimeSpan.Zero;
-            for (int i = 0; i < iteraciones; i++)
-            {
-                tiempo.Reset();
-                tiempo.Start();
-                var p1 = ProcesoNumeros();
-                var p2 = ProcesoLetras();
-                await Task.WhenAll(p1, p2);
-                tiempo.Stop();
-                Console.WriteLine(tiempo.Elapsed);
-                tasincrono += tiempo.Elapsed;
-            }
-            #endregion
+                Console.WriteLine();
+                Console.WriteLine("Sincrono  finalizado en {0} de media", TimeSpan.FromTicks(tsincrono.Ticks / iteraciones));
+                Console.WriteLine("Asincrono finalizado en {0} de media", TimeSpan.FromTicks(tasincrono.Ticks / 5));
+                Console.WriteLine("Diferencia de tiempo {0}\n", TimeSpan.FromTicks((tsincrono.Ticks - tasincrono.Ticks) / iteraciones));
+                Console.WriteLine("Pulse R para repetir o cualquier otra tecla para cerrar...");
 
-            Console.WriteLine();
-            Console.WriteLine("Sincrono finalizado en {0} de media", TimeSpan.FromTicks(tsincrono.Ticks/ iteraciones));
-            Console.WriteLine("Asincrono finalizado en {0} de media", TimeSpan.FromTicks(tasincrono.Ticks / 5));
-            Console.WriteLine("Diferencia de tiempo {0}\n", TimeSpan.FromTicks((tsincrono.Ticks - tasincrono.Ticks) / iteraciones));
-            Console.WriteLine("Pulse ENTER para cerrar...");
-            Console.ReadLine();
+            } 
+            while (Console.ReadKey().Key.ToString().ToUpper() == "R");
         }
 
-        static async Task ProcesoNumeros()
+        static void ProcesoNumeros()
         {
             int a = 0;
             while (a<5)
             {
                 Console.Write(++a + ", ");
-                await Task.Delay(1);
+                Thread.Sleep(1);
             }
         }
 
-        static async Task ProcesoLetras()
+        static void ProcesoLetras()
         {
             int a = 0;
             while (a < 10)
             {
                 Console.Write((char)(65 + a++) + ", ");
-                await Task.Delay(1);
+                Thread.Sleep(1);
             }
         }
 
