@@ -6,10 +6,10 @@ using System.Diagnostics;
 namespace Multitarea
 {
     /// <summary>
-    /// Se muestran dos listados de valores alfanumerico (A..J) y enteros (0..4)
-    /// El listado de enteros acabará a priori antes que el de alfanuméricos
+    /// Se muestran dos listados de valores alfanumerico (A..J) y enteros (0..4) 
     /// Función Main async para poder ejecutar usar await en la llamada a Task.WhenAll para controlar finalización de procesos
-    /// Si no se define de esta manera la ejecución en paralelo se realiza igualmente pero no podremos controlar finalización de todos los procesos al no poder usar await 
+    /// Si no se define de esta manera la ejecución en paralelo se realiza igualmente 
+    /// pero no podremos controlar finalización de todos los procesos al no poder usar await (resultados inesperados)
     /// Se definen las funciones de tipo async para poder simular bloqueos y usar await para liberar proceso
     /// </summary>
     class Program
